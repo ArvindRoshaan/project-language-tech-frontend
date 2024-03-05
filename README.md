@@ -1,4 +1,4 @@
-```markdown
+
 # Machine Translation Mobile Application Development 
 
 ## Overview
