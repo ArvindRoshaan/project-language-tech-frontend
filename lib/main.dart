@@ -564,11 +564,14 @@ class _RecordAudioState extends State<RecordAudio> {
                       hint: Text('Select Language 1'),
                     ),
                   ),
-                  Icon(Icons.swap_horiz, size: 36),
+                  IconButton(
+                    icon: Icon(Icons.swap_horiz, size: 36),
+                    onPressed: swapSelectedLanguages,
+                  ),
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage2,
-                      items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
+                      items: ['Lambani', 'English', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -749,7 +752,7 @@ class _TextPageState extends State<TextPage> {
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage2,
-                      items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
+                      items: ['Lambani', 'English', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
