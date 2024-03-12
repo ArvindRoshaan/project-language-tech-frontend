@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       routes: {
         '/speech': (context) => RecordAudio(),
-        '/text': (context) => text(),
+        '/text': (context) => TextPage(),
         '/image': (context) => image(),
       },
     );
@@ -472,7 +472,7 @@ class RecordAudio extends StatefulWidget {
 
 class _RecordAudioState extends State<RecordAudio> {
   String selectedLanguage1 = 'English'; // Initial value
-  String selectedLanguage2 = 'Spanish'; // Initial value
+  String selectedLanguage2 = 'Lambani'; // Initial value
   final _recorder = FlutterSoundRecorder();
   bool _isRecording = false;
   late final String _recordedFilePath;
@@ -550,7 +550,7 @@ class _RecordAudioState extends State<RecordAudio> {
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage1,
-                      items: ['English', 'Spanish', 'French']
+                      items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -568,7 +568,7 @@ class _RecordAudioState extends State<RecordAudio> {
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage2,
-                      items: ['English', 'Spanish', 'French']
+                      items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -688,7 +688,15 @@ class _RecordAudioState extends State<RecordAudio> {
   }
 }
 
-class text extends StatelessWidget {
+class TextPage extends StatefulWidget {
+  @override
+  _TextPageState createState() => _TextPageState();
+}
+
+class _TextPageState extends State<TextPage> {
+  String selectedLanguage1 = 'English';
+  String selectedLanguage2 = 'English';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -710,6 +718,7 @@ class text extends StatelessWidget {
                   // Dropdown 1
                   Expanded(
                     child: DropdownButton<String>(
+                      value: selectedLanguage1,
                       items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
@@ -717,16 +726,29 @@ class text extends StatelessWidget {
                               ))
                           .toList(),
                       onChanged: (String? value) {
-                        // Handle dropdown change
+                        setState(() {
+                          selectedLanguage1 = value!;
+                        });
                       },
-                      hint: Text('Select Language'),
+                      hint: Text('Select Language 1'),
                     ),
                   ),
                   // Icon
-                  Icon(Icons.swap_horiz, size: 36),
+                  IconButton(
+                    icon: Icon(Icons.swap_horiz, size: 36),
+                    onPressed: () {
+                      // Handle swap button click
+                      setState(() {
+                        final temp = selectedLanguage1;
+                        selectedLanguage1 = selectedLanguage2;
+                        selectedLanguage2 = temp;
+                      });
+                    },
+                  ),
                   // Dropdown 2
                   Expanded(
                     child: DropdownButton<String>(
+                      value: selectedLanguage2,
                       items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
                                 value: value,
@@ -734,9 +756,11 @@ class text extends StatelessWidget {
                               ))
                           .toList(),
                       onChanged: (String? value) {
-                        // Handle dropdown change
+                        setState(() {
+                          selectedLanguage2 = value!;
+                        });
                       },
-                      hint: Text('Select Language'),
+                      hint: Text('Select Language 2'),
                     ),
                   ),
                 ],
