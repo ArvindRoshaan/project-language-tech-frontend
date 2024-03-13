@@ -4,6 +4,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/speech': (context) => RecordAudio(),
         '/text': (context) => TextPage(),
-        '/image': (context) => image(),
+        '/image': (context) => ImageGenerator(),
       },
     );
   }
@@ -49,11 +52,11 @@ class HomePage extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/speech',
-                      arguments: 'Speech to Speech');
+                      arguments: 'Speech to Text');
                 },
                 child: CardWidget(
                   image: 'assets/images/micro.png',
-                  text: 'Speech to Speech',
+                  text: 'Speech to Text',
                 ),
               ),
               GestureDetector(
@@ -536,7 +539,7 @@ class _RecordAudioState extends State<RecordAudio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Record Audio'),
+        title: Text('Speech to Text'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -591,7 +594,7 @@ class _RecordAudioState extends State<RecordAudio> {
               SizedBox(height: 16),
               // Input Boxes
               Container(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Column(
                   children: [
@@ -617,7 +620,7 @@ class _RecordAudioState extends State<RecordAudio> {
                 ),
               ),
 
-              SizedBox(height: 16),
+              SizedBox(height: 2),
               // Translate Button
               Center(
                 child: Column(
@@ -627,7 +630,16 @@ class _RecordAudioState extends State<RecordAudio> {
                           _isRecording ? _stopRecording : _startRecording,
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.orange),
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            // Change background color to red when recording, green otherwise
+                            if (_isRecording) {
+                              return Colors.red;
+                            } else {
+                              return Colors.green;
+                            }
+                          },
+                        ),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -650,7 +662,7 @@ class _RecordAudioState extends State<RecordAudio> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: _playRecording,
                       style: ButtonStyle(
@@ -678,6 +690,14 @@ class _RecordAudioState extends State<RecordAudio> {
                         ],
                       ),
                     ),
+                    // SizedBox(height: 20),
+                    // // Widget to display signal of the audio recording
+                    // Container(
+                    //   width: double.infinity,
+                    //   height: 50, // Adjust height as needed
+                    //   color: Colors.grey[300], // Placeholder color
+                    //   // Add your widget to display the signal here
+                    // ),
                   ],
                 ),
               )
@@ -698,7 +718,29 @@ class TextPage extends StatefulWidget {
 
 class _TextPageState extends State<TextPage> {
   String selectedLanguage1 = 'English';
-  String selectedLanguage2 = 'English';
+  String selectedLanguage2 = 'Lambani';
+  // Future<void> sendDataToServer(String text1, String text2) async {
+  //   final url = Uri.parse('https://your-server-url.com/api/endpoint');
+  //   final body = {
+  //     'text1': text1,
+  //     'text2': text2,
+  //   };
+
+  //   try {
+  //     final response = await http.post(url, body: body);
+
+  //     if (response.statusCode == 200) {
+  //       // Data sent successfully
+  //       print('Data sent successfully');
+  //     } else {
+  //       // Error sending data
+  //       print('Error sending data: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     // Error occurred
+  //     print('Error: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -769,46 +811,60 @@ class _TextPageState extends State<TextPage> {
                 ],
               ),
               SizedBox(height: 16),
-              // Input Boxes
+// Input Boxes
               Container(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // Center the content vertically
                   children: [
-                    TextField(
-                      maxLines: 4,
-                      readOnly: true,
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        labelText: 'Translated Text',
-                        border: OutlineInputBorder(),
+                    Center(
+                      // Center the content horizontally
+                      child: TextField(
+                        maxLines: 4,
+                        readOnly: true,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          labelText: 'Translated Text Appears here',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
                     SizedBox(height: 16),
-                    TextField(
-                      maxLines: 4,
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        labelText: 'Original Text',
-                        border: OutlineInputBorder(),
+                    Center(
+                      // Center the content horizontally
+                      child: TextField(
+                        maxLines: 4,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          labelText: 'Your Text Appears Here',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+
               SizedBox(height: 1),
               // Translate Button
               Center(
                 child: ElevatedButton(
                   onPressed: () {
+                    final text1 = selectedLanguage1;
+
+                    final text2 = selectedLanguage2;
+
+                    // sendDataToServer(text1, text2);
                     // Handle translate button click
                   },
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.orange),
+                        MaterialStateProperty.all<Color>(Colors.blue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                   ),
@@ -828,7 +884,38 @@ class _TextPageState extends State<TextPage> {
   }
 }
 
-class image extends StatelessWidget {
+class ImageGenerator extends StatelessWidget {
+  final TextEditingController promptController = TextEditingController();
+  final apiUrl =
+      Uri.parse('https://54a2-103-232-241-226.ngrok-free.app/process_text/');
+
+  Future<void> sendTextToServer(String text) async {
+    try {
+      var jsonData = {'text': text};
+      var response = await http.post(
+        apiUrl,
+        body: jsonEncode(jsonData),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        print('Text sent successfully!');
+        print('Response: ${response.body}');
+        // You can handle the response here
+      } else {
+        print('Failed to send text. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error sending text: $error');
+    }
+  }
+
+  void generateImage(BuildContext context) {
+    String promptText = promptController.text;
+    // Call sendTextToServer to send the prompt text to the server
+    sendTextToServer(promptText);
+    // Add your logic to handle the response and update the UI accordingly
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -864,6 +951,7 @@ class image extends StatelessWidget {
               SizedBox(height: 16),
               // Text Field for Prompt
               TextField(
+                controller: promptController,
                 maxLines: 2,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
@@ -876,10 +964,11 @@ class image extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle generate button click
+                    // Call generateImage function when the button is pressed
+                    generateImage(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
