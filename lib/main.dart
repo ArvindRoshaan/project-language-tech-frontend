@@ -7,6 +7,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:charset_converter/charset_converter.dart';
 
 void main() {
   runApp(MyApp());
@@ -711,6 +712,7 @@ class _RecordAudioState extends State<RecordAudio> {
   }
 }
 
+
 class TextPage extends StatefulWidget {
   @override
   _TextPageState createState() => _TextPageState();
@@ -719,28 +721,61 @@ class TextPage extends StatefulWidget {
 class _TextPageState extends State<TextPage> {
   String selectedLanguage1 = 'English';
   String selectedLanguage2 = 'Lambani';
-  // Future<void> sendDataToServer(String text1, String text2) async {
-  //   final url = Uri.parse('https://your-server-url.com/api/endpoint');
-  //   final body = {
-  //     'text1': text1,
-  //     'text2': text2,
-  //   };
+  TextEditingController translatedTextController = TextEditingController();
+  TextEditingController userTextController = TextEditingController();
 
-  //   try {
-  //     final response = await http.post(url, body: body);
+  final apiUrl = Uri.parse('https://d3b8-103-232-241-226.ngrok-free.app/machine_translation/');
+  String generated_text_output = 'Your default value here'; // Set default value here
 
-  //     if (response.statusCode == 200) {
-  //       // Data sent successfully
-  //       print('Data sent successfully');
-  //     } else {
-  //       // Error sending data
-  //       print('Error sending data: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     // Error occurred
-  //     print('Error: $e');
-  //   }
-  // }
+  // Create a TextEditingController instance
+  TextEditingController controller = TextEditingController();
+
+  Future<void> getText() async {
+    // Append a unique query parameter to the URL to force fetching a new image
+    final new_generated_text_output = 'https://d3b8-103-232-241-226.ngrok-free.app/generated_text?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+  
+
+  } 
+
+ Future<void> sendDataToServer(String text1, String text2, String userText) async {
+  try {
+    var jsonData = {
+      'text': userText,
+      'src': text1,
+      'tgt': text2
+    };
+    var response = await http.post(
+      apiUrl,
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      print('Text sent successfully!');
+      final decodedResponse = jsonDecode(response.body);
+      final generatedText = decodedResponse['generated_text'];
+      // final utf8EncodedText = utf8.encode(generatedText);
+      // final decodedText = utf8.decode(utf8EncodedText); // Decode UTF-8 bytes to string
+      final ansiEncodedText = generatedText;
+
+      // Convert ANSI-encoded text to a list of bytes
+      final bytes = latin1.encode(ansiEncodedText);
+
+      // Decode bytes from ANSI to UTF-8
+      final utf8EncodedText = utf8.decode(bytes);
+      print('Generated text (UTF-8): ${utf8EncodedText}');
+      setState(() {
+        controller.text = utf8EncodedText; // Update the text in the TextField
+      });
+      // You can handle the response here
+      getText(); // Call getText() after successful response
+    } else {
+      print('Failed to send text. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error sending text: $error');
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -760,15 +795,14 @@ class _TextPageState extends State<TextPage> {
               SizedBox(height: 16),
               Row(
                 children: [
-                  // Dropdown 1
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage1,
                       items: ['English', 'Lambani', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              ))
+                        value: value,
+                        child: Text(value),
+                      ))
                           .toList(),
                       onChanged: (String? value) {
                         setState(() {
@@ -778,11 +812,9 @@ class _TextPageState extends State<TextPage> {
                       hint: Text('Select Language 1'),
                     ),
                   ),
-                  // Icon
                   IconButton(
                     icon: Icon(Icons.swap_horiz, size: 36),
                     onPressed: () {
-                      // Handle swap button click
                       setState(() {
                         final temp = selectedLanguage1;
                         selectedLanguage1 = selectedLanguage2;
@@ -790,15 +822,14 @@ class _TextPageState extends State<TextPage> {
                       });
                     },
                   ),
-                  // Dropdown 2
                   Expanded(
                     child: DropdownButton<String>(
                       value: selectedLanguage2,
                       items: ['Lambani', 'English', 'Soliga', 'Kui', 'Mundri']
                           .map((String value) => DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              ))
+                        value: value,
+                        child: Text(value),
+                      ))
                           .toList(),
                       onChanged: (String? value) {
                         setState(() {
@@ -811,17 +842,15 @@ class _TextPageState extends State<TextPage> {
                 ],
               ),
               SizedBox(height: 16),
-// Input Boxes
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center, // Center the content vertically
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Center(
-                      // Center the content horizontally
                       child: TextField(
+                        controller: controller,
                         maxLines: 4,
                         readOnly: true,
                         keyboardType: TextInputType.multiline,
@@ -833,8 +862,8 @@ class _TextPageState extends State<TextPage> {
                     ),
                     SizedBox(height: 16),
                     Center(
-                      // Center the content horizontally
                       child: TextField(
+                        controller: userTextController,
                         maxLines: 4,
                         keyboardType: TextInputType.multiline,
                         decoration: InputDecoration(
@@ -846,22 +875,17 @@ class _TextPageState extends State<TextPage> {
                   ],
                 ),
               ),
-
-              SizedBox(height: 1),
-              // Translate Button
+              SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     final text1 = selectedLanguage1;
-
                     final text2 = selectedLanguage2;
-
-                    // sendDataToServer(text1, text2);
-                    // Handle translate button click
+                    final userText = userTextController.text;
+                    sendDataToServer(text1, text2, userText);
                   },
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -871,7 +895,7 @@ class _TextPageState extends State<TextPage> {
                   child: Text(
                     'Translate',
                     style: TextStyle(
-                      color: Colors.white, // Text color
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -884,6 +908,8 @@ class _TextPageState extends State<TextPage> {
   }
 }
 
+
+
 class ImageGenerator extends StatefulWidget {
   @override
   _ImageGeneratorState createState() => _ImageGeneratorState();
@@ -892,11 +918,11 @@ class ImageGenerator extends StatefulWidget {
 class _ImageGeneratorState extends State<ImageGenerator> {
   final TextEditingController promptController = TextEditingController();
   String imageUrl = '';
-  final apiUrl = Uri.parse('https://f103-103-232-241-226.ngrok-free.app/process_text/');
+  final apiUrl = Uri.parse('https://d3b8-103-232-241-226.ngrok-free.app/process_text/');
 
   void getImage() async {
     // Append a unique query parameter to the URL to force fetching a new image
-    final newImageUrl = 'https://f103-103-232-241-226.ngrok-free.app/generated_image?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+    final newImageUrl = 'https://d3b8-103-232-241-226.ngrok-free.app/generated_image?timestamp=${DateTime.now().millisecondsSinceEpoch}';
     
     setState(() {
       imageUrl = newImageUrl;

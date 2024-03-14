@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  charset_converter: ^2.2.0
   cupertino_icons: ^1.0.6
   path_provider: ^2.0.14
   permission_handler: ^10.2.0
