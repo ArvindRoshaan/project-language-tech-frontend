@@ -6,7 +6,7 @@ from torch import autocast
 from pyngrok import ngrok
 import nest_asyncio
 from fastapi.middleware.cors import CORSMiddleware
-from auth import auth_token
+
 from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse, FileResponse
 import uvicorn
 
@@ -22,7 +22,7 @@ app.add_middleware(
 
 modelid = "CompVis/stable-diffusion-v1-4"
 device = "cuda"
-pipe = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=auth_token) 
+pipe = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16) 
 pipe.to(device) 
 
 class TextRequest(BaseModel):
