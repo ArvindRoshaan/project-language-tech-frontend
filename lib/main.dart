@@ -7,13 +7,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:charset_converter/charset_converter.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,22 +22,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
       routes: {
-        '/speech': (context) => RecordAudio(),
-        '/text': (context) => TextPage(),
-        '/image': (context) => ImageGenerator(),
+        '/speech': (context) => const RecordAudio(),
+        '/text': (context) => const TextPage(),
+        '/image': (context) => const ImageGenerator(),
       },
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Machine Translation'),
+        title: const Text('Machine Translation'),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -49,13 +52,13 @@ class HomePage extends StatelessWidget {
                 width: 420,
                 height: 120,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/speech',
                       arguments: 'Speech to Text');
                 },
-                child: CardWidget(
+                child: const CardWidget(
                   image: 'assets/images/micro.png',
                   text: 'Speech to Text',
                 ),
@@ -65,7 +68,7 @@ class HomePage extends StatelessWidget {
                   Navigator.pushNamed(context, '/text',
                       arguments: 'Text to Text');
                 },
-                child: CardWidget(
+                child: const CardWidget(
                   image: 'assets/images/text.png',
                   text: 'Text to Text',
                 ),
@@ -75,7 +78,7 @@ class HomePage extends StatelessWidget {
                   Navigator.pushNamed(context, '/image',
                       arguments: 'Text to Image');
                 },
-                child: CardWidget(
+                child: const CardWidget(
                   image: 'assets/images/image.png',
                   text: 'Text to Image',
                 ),
@@ -92,15 +95,14 @@ class CardWidget extends StatelessWidget {
   final String image;
   final String text;
 
-  const CardWidget({Key? key, required this.image, required this.text})
-      : super(key: key);
+  const CardWidget({super.key, required this.image, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       height: MediaQuery.of(context).size.height * 0.2,
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey[200],
@@ -113,10 +115,10 @@ class CardWidget extends StatelessWidget {
             width: 80,
             height: 80,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             text,
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
         ],
       ),
@@ -124,352 +126,10 @@ class CardWidget extends StatelessWidget {
   }
 }
 
-// class speech extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Speech to Speech'),
-//         backgroundColor: Colors.white,
-//         iconTheme: IconThemeData(color: Colors.black),
-//       ),
-//       backgroundColor: Colors.white,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             SizedBox(height: 16),
-//             Row(
-//               children: [
-//                 // Dropdown 1
-//                 Expanded(
-//                   child: DropdownButton<String>(
-//                     items: ['English', 'Spanish', 'French']
-//                         .map((String value) => DropdownMenuItem<String>(
-//                               value: value,
-//                               child: Text(value),
-//                             ))
-//                         .toList(),
-//                     onChanged: (String? value) {
-//                       // Handle dropdown change
-//                     },
-//                     hint: Text('Select Language'),
-//                   ),
-//                 ),
-//                 // Icon
-//                 Icon(Icons.swap_horiz, size: 36),
-//                 // Dropdown 2
-//                 Expanded(
-//                   child: DropdownButton<String>(
-//                     items: ['English', 'Spanish', 'French']
-//                         .map((String value) => DropdownMenuItem<String>(
-//                               value: value,
-//                               child: Text(value),
-//                             ))
-//                         .toList(),
-//                     onChanged: (String? value) {
-//                       // Handle dropdown change
-//                     },
-//                     hint: Text('Select Language'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             SizedBox(height: 16),
-//             // Input Boxes
-//             Container(
-//               width: MediaQuery.of(context).size.width * 0.8,
-//               height: MediaQuery.of(context).size.height * 0.4,
-//               child: Column(
-//                 children: [
-//                   TextField(
-//                     maxLines: null,
-//                     keyboardType: TextInputType.multiline,
-//                     decoration: InputDecoration(
-//                       labelText: 'Translated Text will Appear Here',
-//                       border: OutlineInputBorder(),
-//                     ),
-//                   ),
-//                   SizedBox(height: 16),
-//                   TextField(
-//                     maxLines: null,
-//                     keyboardType: TextInputType.multiline,
-//                     decoration: InputDecoration(
-//                       labelText: 'Your Text Appers Here',
-//                       border: OutlineInputBorder(),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class SpeechTranslation extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Speech Translation'),
-//         backgroundColor: Colors.white,
-//         iconTheme: IconThemeData(color: Colors.black),
-//       ),
-//       backgroundColor: Colors.white,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             SizedBox(height: 16),
-//             Row(
-//               children: [
-//                 // Dropdown 1
-//                 Expanded(
-//                   child: DropdownButton<String>(
-//                     items: ['English', 'Spanish', 'French', 'German', 'Chinese']
-//                         .map((String value) => DropdownMenuItem<String>(
-//                               value: value,
-//                               child: Text(value),
-//                             ))
-//                         .toList(),
-//                     onChanged: (String? value) {
-//                       // Handle source language change
-//                     },
-//                     hint: Text('Select Source Language'),
-//                   ),
-//                 ),
-//                 // Icon
-//                 Icon(Icons.swap_horiz, size: 36),
-//                 // Dropdown 2
-//                 Expanded(
-//                   child: DropdownButton<String>(
-//                     items: ['English', 'Spanish', 'French', 'German', 'Chinese']
-//                         .map((String value) => DropdownMenuItem<String>(
-//                               value: value,
-//                               child: Text(value),
-//                             ))
-//                         .toList(),
-//                     onChanged: (String? value) {
-//                       // Handle target language change
-//                     },
-//                     hint: Text('Select Target Language'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             SizedBox(height: 16),
-//             // Input Boxes
-//             Container(
-//               width: MediaQuery.of(context).size.width * 0.8,
-//               height: MediaQuery.of(context).size.height * 0.4,
-//               child: Column(
-//                 children: [
-//                   TextField(
-//                     maxLines: 6,
-//                     keyboardType: TextInputType.multiline,
-//                     decoration: InputDecoration(
-//                       labelText: 'Translated Text',
-//                       border: OutlineInputBorder(),
-//                     ),
-//                   ),
-//                   SizedBox(height: 16),
-//                   TextField(
-//                     maxLines: 6,
-//                     keyboardType: TextInputType.multiline,
-//                     decoration: InputDecoration(
-//                       labelText: 'Original Text',
-//                       border: OutlineInputBorder(),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//             // Record Button
-//             RecordButton(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class RecordButton extends StatefulWidget {
-//   @override
-//   _RecordButtonState createState() => _RecordButtonState();
-// }
-
-// class _RecordButtonState extends State<RecordButton> {
-//   bool isRecording = false;
-//   AudioPlayer audioPlayer = AudioPlayer();
-//   String audioPath = '';
-
-//   Future<void> _startRecording() async {
-//     Directory appDocDir = await getApplicationDocumentsDirectory();
-//     String appDocPath = appDocDir.path;
-//     audioPath = '$appDocPath/recorded_audio.wav';
-
-//     if (await AudioRecorder.hasPermissions) {
-//       await AudioRecorder.start(
-//         path: audioPath,
-//         audioOutputFormat: AudioOutputFormat.AAC_ADTS,
-//       );
-
-//       setState(() {
-//         isRecording = true;
-//       });
-//     } else {
-//       // Handle no permission
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Required'),
-//             content:
-//                 Text('Please grant microphone permission to record audio.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(),
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   Future<void> _stopRecording() async {
-//     if (isRecording) {
-//       Recording recording = await AudioRecorder.stop();
-//       print('Recording saved to: ${recording.path}');
-
-//       setState(() {
-//         isRecording = false;
-//       });
-
-//       // Play the recorded audio (optional)
-//       await audioPlayer.play(recording.path, isLocal: true);
-//     }
-//   }
-
-//   @override
-//   void dispose() {
-//     audioPlayer.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTapDown: (_) => _startRecording(),
-//       onTapUp: (_) => _stopRecording(),
-//       child: Container(
-//         padding: EdgeInsets.all(10),
-//         margin: EdgeInsets.only(bottom: 16),
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           color: isRecording ? Colors.red : Colors.blue,
-//         ),
-//         child: Icon(
-//           Icons.mic,
-//           color: Colors.white,
-//           size: 36,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class RecordAudio extends StatefulWidget {
-//   @override
-//   _RecordAudioState createState() => _RecordAudioState();
-// }
-
-// class _RecordAudioState extends State<RecordAudio> {
-//   final _recorder = FlutterSoundRecorder();
-//   bool _isRecording = false;
-//   late final String _recordedFilePath;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initRecorder();
-//   }
-
-//   Future<void> _initRecorder() async {
-//     final status = await Permission.microphone.request();
-//     if (status == PermissionStatus.granted) {
-//       await _recorder.openRecorder();
-//       final appDir = await getApplicationDocumentsDirectory();
-//       _recordedFilePath = '${appDir.path}/recorded_audio.wav';
-//     }
-//   }
-
-//   Future<void> _startRecording() async {
-//     if (!_isRecording) {
-//       await _recorder.startRecorder(
-//         toFile: _recordedFilePath,
-//         codec: Codec.pcm16WAV,
-//       );
-//       setState(() {
-//         _isRecording = true;
-//       });
-//     }
-//   }
-
-//   Future<void> _stopRecording() async {
-//     if (_isRecording) {
-//       await _recorder.stopRecorder();
-//       setState(() {
-//         _isRecording = false;
-//       });
-//     }
-//   }
-
-//   Future<void> _playRecording() async {
-//     final file = File(_recordedFilePath);
-//     final player = AudioPlayer();
-
-//     if (await file.exists()) {
-//       final bytes = await file.readAsBytes();
-//       final source = BytesSource(bytes);
-//       await player.play(source);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Record Audio'),
-//       ),
-//       body: Center(
-//         child: Column(
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-//   ElevatedButton(
-//     onPressed: _isRecording ? _stopRecording : _startRecording,
-//     child: Text(_isRecording ? 'Stop Recording' : 'Start Recording'),
-//   ),
-//   SizedBox(height: 20),
-//   ElevatedButton(
-//     onPressed: _playRecording,
-//     child: Text('Play Recording'),
-//   ),
-// ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class RecordAudio extends StatefulWidget {
+  const RecordAudio({super.key});
+
   @override
   _RecordAudioState createState() => _RecordAudioState();
 }
@@ -540,7 +200,7 @@ class _RecordAudioState extends State<RecordAudio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Speech to Text'),
+        title: const Text('Speech to Text'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -565,11 +225,11 @@ class _RecordAudioState extends State<RecordAudio> {
                           selectedLanguage1 = value!;
                         });
                       },
-                      hint: Text('Select Language 1'),
+                      hint: const Text('Select Language 1'),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.swap_horiz, size: 36),
+                    icon: const Icon(Icons.swap_horiz, size: 36),
                     onPressed: swapSelectedLanguages,
                   ),
                   Expanded(
@@ -586,18 +246,18 @@ class _RecordAudioState extends State<RecordAudio> {
                           selectedLanguage2 = value!;
                         });
                       },
-                      hint: Text('Select Language 2'),
+                      hint: const Text('Select Language 2'),
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Input Boxes
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
-                child: Column(
+                child: const Column(
                   children: [
                     TextField(
                       maxLines: 4,
@@ -621,7 +281,7 @@ class _RecordAudioState extends State<RecordAudio> {
                 ),
               ),
 
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               // Translate Button
               Center(
                 child: Column(
@@ -655,15 +315,15 @@ class _RecordAudioState extends State<RecordAudio> {
                             _isRecording ? Icons.stop : Icons.mic,
                             color: Colors.white,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             _isRecording ? 'Stop Recording' : 'Start Recording',
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: _playRecording,
                       style: ButtonStyle(
@@ -676,7 +336,7 @@ class _RecordAudioState extends State<RecordAudio> {
                           ),
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
@@ -714,6 +374,8 @@ class _RecordAudioState extends State<RecordAudio> {
 
 
 class TextPage extends StatefulWidget {
+  const TextPage({super.key});
+
   @override
   _TextPageState createState() => _TextPageState();
 }
@@ -732,7 +394,7 @@ class _TextPageState extends State<TextPage> {
 
   Future<void> getText() async {
     // Append a unique query parameter to the URL to force fetching a new image
-    final new_generated_text_output = 'https://d3b8-103-232-241-226.ngrok-free.app/generated_text?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+    final newGeneratedTextOutput = 'https://d3b8-103-232-241-226.ngrok-free.app/generated_text?timestamp=${DateTime.now().millisecondsSinceEpoch}';
   
 
   } 
@@ -762,7 +424,7 @@ class _TextPageState extends State<TextPage> {
 
       // Decode bytes from ANSI to UTF-8
       final utf8EncodedText = utf8.decode(bytes);
-      print('Generated text (UTF-8): ${utf8EncodedText}');
+      print('Generated text (UTF-8): $utf8EncodedText');
       setState(() {
         controller.text = utf8EncodedText; // Update the text in the TextField
       });
@@ -781,9 +443,9 @@ class _TextPageState extends State<TextPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Text to Text'),
+        title: const Text('Text to Text'),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -792,7 +454,7 @@ class _TextPageState extends State<TextPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -809,11 +471,11 @@ class _TextPageState extends State<TextPage> {
                           selectedLanguage1 = value!;
                         });
                       },
-                      hint: Text('Select Language 1'),
+                      hint: const Text('Select Language 1'),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.swap_horiz, size: 36),
+                    icon: const Icon(Icons.swap_horiz, size: 36),
                     onPressed: () {
                       setState(() {
                         final temp = selectedLanguage1;
@@ -836,13 +498,13 @@ class _TextPageState extends State<TextPage> {
                           selectedLanguage2 = value!;
                         });
                       },
-                      hint: Text('Select Language 2'),
+                      hint: const Text('Select Language 2'),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
-              Container(
+              const SizedBox(height: 16),
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Column(
@@ -854,19 +516,19 @@ class _TextPageState extends State<TextPage> {
                         maxLines: 4,
                         readOnly: true,
                         keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Translated Text Appears here',
                           border: OutlineInputBorder(),
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Center(
                       child: TextField(
                         controller: userTextController,
                         maxLines: 4,
                         keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Your Text Appears Here',
                           border: OutlineInputBorder(),
                         ),
@@ -875,7 +537,7 @@ class _TextPageState extends State<TextPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -892,7 +554,7 @@ class _TextPageState extends State<TextPage> {
                       ),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Translate',
                     style: TextStyle(
                       color: Colors.white,
@@ -911,6 +573,8 @@ class _TextPageState extends State<TextPage> {
 
 
 class ImageGenerator extends StatefulWidget {
+  const ImageGenerator({super.key});
+
   @override
   _ImageGeneratorState createState() => _ImageGeneratorState();
 }
@@ -961,9 +625,9 @@ class _ImageGeneratorState extends State<ImageGenerator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Generator'),
+        title: const Text('Image Generator'),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -992,18 +656,18 @@ class _ImageGeneratorState extends State<ImageGenerator> {
                 ),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Text Field for Prompt
               TextField(
                 controller: promptController,
                 maxLines: 2,
                 keyboardType: TextInputType.text,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Enter Prompt',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Generate Button
               Center(
                 child: ElevatedButton(
@@ -1017,7 +681,7 @@ class _ImageGeneratorState extends State<ImageGenerator> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Generate',
                     style: TextStyle(
                       color: Colors.white,
