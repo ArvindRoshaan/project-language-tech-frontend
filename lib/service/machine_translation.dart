@@ -9,8 +9,8 @@ Future<String?> translateText(String sourceLang, String targetLang, String sourc
       'tgt': targetLang
     };
     var response = await http.post(
-      Uri.parse('https://b95b-103-232-241-226.ngrok-free.app/translate_text/'), //dgx1 system
-      //Uri.parse('https://c023-223-186-69-228.ngrok-free.app/translate_text/'), //wsl2 laptop
+      //Uri.parse('https://b95b-103-232-241-226.ngrok-free.app/translate_text/'), //dgx1 system
+      Uri.parse('https://91dc-223-186-69-228.ngrok-free.app/translate_text/'), //wsl2 laptop
       body: jsonEncode(jsonData),
       headers: {'Content-Type': 'application/json'},
     );

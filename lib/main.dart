@@ -59,6 +59,7 @@ class MyHomePage extends StatelessWidget {
               Navigator.of(context).pushNamed('/text'); // Navigate to the TranslatorPage
             },
           ),
+          /*
           FeatureCard(
             title: 'Image',
             iconData: Icons.image,
@@ -67,6 +68,7 @@ class MyHomePage extends StatelessWidget {
               Navigator.of(context).pushNamed('/image'); // Navigate to the ImageGeneratorPage
             },
           ),
+          */
         ],
       ),
     );
