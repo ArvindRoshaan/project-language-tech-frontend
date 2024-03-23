@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'service/machine_translation.dart';
 
 class TranslatorPage extends StatefulWidget {
-  const TranslatorPage({Key? key}) : super(key: key);
+  const TranslatorPage({super.key});
 
   @override
   _TextPageState createState() => _TextPageState();
@@ -15,11 +15,11 @@ class LanguageSelectionDropdown extends StatelessWidget {
   final List<String> languages;
 
   const LanguageSelectionDropdown({
-    Key? key,
+    super.key,
     required this.selectedLanguage,
     required this.onLanguageChanged,
     required this.languages,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class _TextPageState extends State<TranslatorPage> {
                         selectedLanguage1 = newValue!;
                       });
                     },
-                    languages: ['English', 'Kannada', 'Lambani'], // Add other languages if necessary
+                    languages: const ['English', 'Kannada', 'Lambani', 'Tamil'], // Add other languages if necessary
                   ),
                 ),
                 IconButton(
@@ -115,7 +115,7 @@ class _TextPageState extends State<TranslatorPage> {
                         selectedLanguage2 = newValue!;
                       });
                     },
-                    languages: ['English', 'Kannada', 'Lambani'], // Add other languages if necessary
+                    languages: const ['English', 'Kannada', 'Lambani', 'Tamil'], // Add other languages if necessary
                   ),
                 ),
               ]
@@ -171,6 +171,8 @@ class _TextPageState extends State<TranslatorPage> {
                   onPressed: isTranslating
                       ? null // 2. Make the button non-clickable when translating
                       : () async {
+                          // Dismiss the keyboard
+                          FocusScope.of(context).unfocus();
                           setState(() {
                             isTranslating = true; // Start translating
                           });
@@ -180,7 +182,7 @@ class _TextPageState extends State<TranslatorPage> {
                           final userText = _editableTextController.text;
 
                           // Simulate translation logic
-                          String? translatedText = await machineTranslateText(text1, text2, userText);
+                          String? translatedText = await translateText(text1, text2, userText);
 
                           if (translatedText != null) {
                             setState(() {
@@ -194,13 +196,13 @@ class _TextPageState extends State<TranslatorPage> {
                             isTranslating = false; // End translating
                           });
                         },
-                  child: Text(
-                    isTranslating ? 'Translating...' : 'Translate', // 3. Update button text based on state
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isTranslating ? Colors.red : Colors.green, // 4. Change color based on state
                     minimumSize: const Size(double.infinity, 50), // Makes the button wide and tall
+                  ),
+                  child: Text(
+                    isTranslating ? 'Translating...' : 'Translate', // 3. Update button text based on state
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
               ]

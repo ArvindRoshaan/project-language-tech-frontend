@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'service/image_generation.dart';
 
 class ImageGeneratorPage extends StatefulWidget {
-  const ImageGeneratorPage({Key? key}) : super(key: key);
+  const ImageGeneratorPage({super.key});
 
   @override
   _TextPageState createState() => _TextPageState();
@@ -15,11 +15,11 @@ class LanguageSelectionDropdown extends StatelessWidget {
   final List<String> languages;
 
   const LanguageSelectionDropdown({
-    Key? key,
+    super.key,
     required this.selectedLanguage,
     required this.onLanguageChanged,
     required this.languages,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,7 @@ class _TextPageState extends State<ImageGeneratorPage> {
                         selectedLanguage = newValue!;
                       });
                     },
-                    languages: ['English', 'Kannada', 'Lambani'], // Add other languages if necessary
+                    languages: const ['English', 'Lambani'], // Add other languages if necessary
                   ),
                 ),
               ]
@@ -124,7 +124,7 @@ class _TextPageState extends State<ImageGeneratorPage> {
                 ),
                 const SizedBox(height: 15), // Add some spacing between the two fields
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     height: 100,
                     child: TextField(
                       controller: _editableTextController,
@@ -155,7 +155,7 @@ class _TextPageState extends State<ImageGeneratorPage> {
                           final userText = _editableTextController.text;
 
                           // Simulate translation logic
-                          String? newImageUrl = await generateImage(userText);
+                          String? newImageUrl = await generateImage(userText, text);
 
                           if (newImageUrl != null) {
                             setState(() {
@@ -170,13 +170,13 @@ class _TextPageState extends State<ImageGeneratorPage> {
                             isFetching = false; // End translating
                           });
                         },
-                  child: Text(
-                    isFetching ? 'Generating...' : 'Generate', // 3. Update button text based on state
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isFetching ? Colors.red : Colors.green, // 4. Change color based on state
                     minimumSize: const Size(double.infinity, 50), // Makes the button wide and tall
+                  ),
+                  child: Text(
+                    isFetching ? 'Generating...' : 'Generate', // 3. Update button text based on state
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
               ]
